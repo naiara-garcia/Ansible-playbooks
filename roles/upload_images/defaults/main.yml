@@ -1,0 +1,8 @@
+---
+# defaults file for upload_images
+
+file: image.tar.gz
+docker_registry: master.mesos:5002/stratio
+username: administrador
+dest_path: mnt/resource
+registry: qa.stratio.com/stratio

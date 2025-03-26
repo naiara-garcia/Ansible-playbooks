@@ -1,0 +1,6 @@
+---
+# defaults file for download_image
+
+registry: <<registry>>
+file: image.tar.gz
+username: naiaragarcia

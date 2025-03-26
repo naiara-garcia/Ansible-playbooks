@@ -1,0 +1,11 @@
+---
+# defaults file for add_user
+
+admins:
+  - <<admin>>
+
+users:
+  - <<user>>
+
+mix:
+  - <<user>>

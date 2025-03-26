@@ -1,0 +1,5 @@
+---
+# defaults file for download_image_private_registry
+
+registry: <<registry>>
+ansible_python_interpreter: /bin/python3

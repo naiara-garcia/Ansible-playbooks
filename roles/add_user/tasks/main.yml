@@ -1,0 +1,70 @@
+---
+# tasks file for add_user
+
+- name: Add new user
+  user:
+    name: "{{ item }}"
+    create_home: yes
+  with_items: "{{ mix }}"
+
+- name: Modify /home/user permissions
+  file:
+    path: /home/{{ item }}
+    owner: "{{ item }}"
+    mode: 0700
+    state: directory
+  with_items: "{{ mix }}"
+
+- name: Create .ssh directory
+  file:
+    path: /home/{{ item }}/.ssh
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: 0755   
+    state: directory 
+  with_items: "{{ mix }}"
+
+- name: Create authorized_keys file
+  file:
+    path: /home/{{ item }}/.ssh/authorized_keys
+    owner: "{{ item }}"
+    group: "{{ item }}"
+    mode: 0644
+    state: touch
+  with_items: "{{ mix }}"
+
+- name: Set authorized key
+  copy:
+    src: '../files/id_rsa_{{ item }}'
+    dest: /home/{{ item }}/.ssh/authorized_keys
+    owner: "{{ item }}"
+    force: yes
+  with_items: "{{ mix }}"
+
+- name: Add admins to docker group
+  user: 
+    name: "{{ item }}"
+    groups: docker 
+    append: yes
+  when: docker is defined and docker
+  with_items: "{{ admins }}"
+
+- name: Add line into /etc/sudoers for users
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: "{{ item }} ALL=(ALL:ALL) NOPASSWD:ALL, !/bin/su"
+    validate: '/usr/sbin/visudo -cf %s'
+  with_items: "{{ users }}"
+
+- name: Add line into /etc/sudoers for admins
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: "{{ item }} ALL=(ALL:ALL) NOPASSWD:ALL"
+    validate: '/usr/sbin/visudo -cf %s'
+  with_items: "{{ admins }}"
+
+- name: Configure user account to never expire password
+  shell: "chage -m 0 -M 99999 -I -1 -E -1 {{ item }}"
+  with_items: "{{ mix }}"

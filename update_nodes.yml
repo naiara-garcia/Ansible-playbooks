@@ -1,0 +1,15 @@
+- name: Update agent nodes
+  hosts: dnsserver 
+  become: yes
+
+  tasks:
+  - name: Clean
+    command: yum clean all
+
+  - name: Rebuild database
+    command: rpm --rebuilddb
+
+  - name: Update the server
+    yum:
+      name: '*'
+      state: latest

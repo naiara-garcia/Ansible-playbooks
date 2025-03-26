@@ -1,0 +1,47 @@
+---
+# tasks file for download_image
+
+- name: Create destination directory
+  file:
+    path: /tmp/image
+    owner: "{{ username }}"
+    group: "{{ username }}"
+    state: directory
+
+- name: Download image
+  docker_image:
+    name: "{{ registry }}/{{ item.key }}:{{ item.value }}"
+    source: pull
+    timeout: 1000
+  loop: "{{ images | dict2items }}"
+  register: _alias_vc_0
+  async: 1000
+  poll: 5
+
+- name: Save image
+  docker_image:
+    name: "{{ registry }}/{{ item.key }}"
+    tag: "{{ item.value }}"
+    archive_path: /tmp/image/{{ item.key }}.tar
+    source: local
+    state: present
+    timeout: 1000
+  loop: "{{ images | dict2items }}"
+  register: _alias_vc_0
+  async: 1000
+  poll: 5
+
+- name: Delete downloaded image
+  shell: "docker rmi {{ registry }}/{{ item.key}}:{{ item.value }}"
+  loop: "{{ images | dict2items }}"
+  register: _alias_vc_0
+  async: 1000
+  poll: 5  
+
+- name: Compress images
+  archive:
+    path: /tmp/image
+    dest: /tmp/{{ file }}
+    owner: "{{ username }}"
+    group: "{{ username }}"  
+    mode: '0644'

@@ -1,0 +1,5 @@
+---
+# vars file for add_user
+
+user:
+  - 'test'

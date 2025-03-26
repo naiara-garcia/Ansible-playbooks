@@ -1,0 +1,53 @@
+---
+# tasks file for download_image_private_registry
+
+- name: Download image
+  docker_image:
+    name: "{{ registry }}/{{ item.key }}:{{ item.value }}"
+    source: pull
+    timeout: 1000
+  loop: "{{ images | dict2items }}"
+  register: _alias_vc_0
+  async: 1000
+  poll: 5
+
+- name: Waits for docker registry to be accessible
+  wait_for:
+    host: "{{ docker_registry }}"
+    port: "{{ docker_port }}"
+    delay: 60
+    state: drained
+
+- name: Log into DockerHub
+  docker_login:
+    registry: "{{ docker_registry }}:{{ docker_port }}"
+    username: "{{ docker_username }}"
+    password: "{{ docker_password }}"
+    reauthorize: yes
+
+- name: Push image
+  docker_image:
+    name: "{{ registry }}/{{ item.key }}"
+    repository: "{{ docker_registry }}:{{ docker_port }}/{{ registry_path }}/{{ item.key }}"
+    tag: "{{ item.value }}"
+    push: yes
+    state: present
+    timeout: 2000
+    source: local
+  loop: "{{ query('dict', images) }}"
+  register: _alias_vc_0
+  async: 2000
+  poll: 5  
+
+- name: Log out of DockerHub
+  docker_login:
+    registry: "{{ docker_registry }}:{{ docker_port }}"
+    state: absent
+
+- name: Delete pulled images
+  shell: "docker rmi -f {{ registry }}/{{ item.key}}:{{ item.value }}"
+  loop: "{{ query('dict', images) }}"
+
+- name: Delete pushed images
+  shell: "docker rmi -f {{ docker_registry }}:{{ docker_port }}/{{ registry_path }}/{{ item.key }}:{{ item.value }}"
+  loop: "{{ query('dict', images) }}"  

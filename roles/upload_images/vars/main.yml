@@ -1,0 +1,6 @@
+---
+# vars file for upload_images
+
+images:
+  sparta: "2.12.1"
+  spark-stratio-driver: "2.2.0-2.6.3"

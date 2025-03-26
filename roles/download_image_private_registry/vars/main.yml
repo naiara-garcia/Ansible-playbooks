@@ -1,0 +1,11 @@
+---
+# vars file for download_image_private_registry
+
+docker_registry: <<registry>>
+docker_port: <<registry_port>>
+registry_path: <<registry_path>>
+docker_username: <<docker_username>>
+docker_password: <<docker_passwd>>
+ansible_python_interpreter: /usr/bin/python
+images:
+  <<image_name>>: "<<image_tag>>"

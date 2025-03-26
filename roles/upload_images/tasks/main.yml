@@ -1,0 +1,50 @@
+---
+# tasks file for upload_images
+
+- name: Extract image file
+  unarchive:
+    src: "/tmp/{{ file }}"
+    dest: "/{{ dest_path }}"
+    remote_src: yes
+
+- name: Load image
+  docker_image:
+    name: "{{ docker_registry }}/{{ item.key }}"
+    load_path: "/{{ dest_path }}/image/{{ item.key }}.tar"
+    tag: "{{ item.value }}"
+    state: present
+    http_timeout: 1000
+  loop: "{{ lookup('dict', images) }}"
+  register: _alias_vc_0
+  async: 1000
+  poll: 5
+
+- name: Tag image
+  shell: "docker tag {{ registry }}/{{ item.key }}:{{ item.value }} {{ docker_registry }}/{{ item.key }}:{{ item.value }}"
+  loop: "{{ lookup('dict', images) }}"
+
+- name: Push image
+  docker_image:
+    name: "{{ docker_registry }}/{{ item.key }}"
+    load_path: "/{{ dest_path }}/image/{{ item.key }}.tar"
+    tag: "{{ item.value }}"
+    push: yes
+    state: present
+    http_timeout: 1000
+  loop: "{{ lookup('dict', images) }}"
+  register: _alias_vc_0
+  async: 1000
+  poll: 5
+
+- name: Delete uploaded files
+  file:
+    path: "/{{ dest_path }}/image"
+    state: absent
+
+- name: Delete pulled images
+  shell: "docker rmi -f {{ docker_registry }}/{{ item.key}}:{{ item.value }}"
+  loop: "{{ lookup('dict', images) }}"
+
+- name: Delete pushed images
+  shell: "docker rmi -f {{ registry }}/{{ item.key}}:{{ item.value }}"
+  loop: "{{ lookup('dict', images) }}"  

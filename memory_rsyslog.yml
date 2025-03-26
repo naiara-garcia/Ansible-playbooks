@@ -1,0 +1,18 @@
+---
+################### Change memory rsyslog #############
+
+- hosts: agent
+  gather_facts: no 
+  become: yes
+  tasks:
+  - name: copy system unit
+    copy:
+      dest: /usr/lib/systemd/system/rsyslog.service
+      src: /stratio_volume/playbooks/files/rsyslog.service
+  - name: daemon-reload
+    ansible.builtin.systemd:
+      daemon_reload: yes
+  - name: restart rsyslog
+    ansible.builtin.service:
+      name: rsyslog
+      state: restarted

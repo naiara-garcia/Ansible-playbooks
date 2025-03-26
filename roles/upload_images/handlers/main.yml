@@ -1,0 +1,15 @@
+---
+# handlers file for upload_images
+
+- name: Push images at master
+  docker_image:
+    name: "{{ docker_registry }}/{{ item.key }}"
+    load_path: "/{{ dest_path }}/image/{{ item.key }}.tar"
+    tag: "{{ item.value }}"
+    push: yes
+    state: present
+    http_timeout: 1000
+  loop: "{{ query('dict', images) }}"
+  register: _alias_vc_0
+  async: 1000
+  poll: 5 

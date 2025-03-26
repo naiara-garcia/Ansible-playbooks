@@ -1,0 +1,5 @@
+---
+# vars file for download_image
+
+images:
+  <<image_name>>: "<<tag>>"
