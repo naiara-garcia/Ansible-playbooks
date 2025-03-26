@@ -1,0 +1,5 @@
+---
+- name: Creación del VG indicado
+  hosts: all
+  roles:
+    - crear_vg

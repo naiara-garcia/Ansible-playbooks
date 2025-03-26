@@ -1,0 +1,5 @@
+---
+# vars file for borrar_vg
+nombre_vg: vg_nuevo
+nombre_lv: lv_nuevo
+fs_path: /nuevo

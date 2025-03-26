@@ -1,0 +1,5 @@
+---
+- name: Extensión del VG indicado
+  hosts: all
+  roles:
+    - extender_vg

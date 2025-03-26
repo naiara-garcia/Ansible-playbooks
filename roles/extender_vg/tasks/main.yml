@@ -1,0 +1,14 @@
+---
+# tasks file for extender_vg
+
+- name: Extender el volume group con el disco /dev/sdd
+  lvg: 
+    vg: "{{ nombre_vg }}"
+    pvs: "{{ disco }}"
+
+- name: Extender un LV con el nombre lv_test1 con 29GB
+  lvol: 
+    vg: "{{ nombre_vg }}" 
+    lv: "{{ nombre_lv }}" 
+    size: "{{ size }}"
+    resizefs: true

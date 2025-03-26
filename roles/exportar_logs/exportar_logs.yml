@@ -1,0 +1,6 @@
+---
+- name: Exportación de los logs al equipo srvcceasfsl01
+  hosts: all
+  roles:
+    - iptables
+    - exportar_logs

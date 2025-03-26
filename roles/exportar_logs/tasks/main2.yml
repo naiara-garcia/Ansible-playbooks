@@ -1,0 +1,40 @@
+---
+# tasks file for exportar_logs
+
+- name: Instalar nfs
+  yum:
+    name: nfs-utils
+    state: latest
+
+- name: Arrancar NFS
+  service:
+    name: nfs
+    state: started
+    enabled: yes
+  
+- name: Añadir líneas al fichero /etc/exports
+  lineinfile:
+    path: /etc/exports
+    line: "{{ fs1 }} srvcceasfsl01(ro)"
+  notify: Reinicio nfs
+
+- name: Añadir líneas al fichero /etc/exports
+  lineinfile:
+    path: /etc/exports
+    line: "{{ fs2 }} srvcceasfsl01(ro)"
+  notify: Reinicio nfs
+  when: [ fs2 != '' ]
+
+- name: Añadir líneas al fichero /etc/exports
+  lineinfile:
+    path: /etc/exports
+    line: "{{ fs3 }} srvcceasfsl01(ro)"
+  notify: Reinicio nfs
+  when: [ fs3 != '' ]
+
+- name: Añadir líneas al fichero /etc/exports
+  lineinfile:
+    path: /etc/exports
+    line: "{{ fs4 }} srvcceasfsl01(ro)"
+  notify: Reinicio nfs    
+  when: [ fs4 != '' ]

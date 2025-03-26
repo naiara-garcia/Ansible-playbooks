@@ -1,0 +1,7 @@
+---
+# handlers file for exportar_logs
+
+- name: Reinicio nfs
+  service:
+    name: nfs
+    state: restarted

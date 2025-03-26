@@ -1,0 +1,7 @@
+---
+# vars file for extender_vg
+
+nombre_vg: vg_TEST
+nombre_lv: lv_test1
+disco: /dev/sdd
+size: +100%FREE

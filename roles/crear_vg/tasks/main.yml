@@ -1,0 +1,47 @@
+---
+# tasks file for crear_vg
+- name: Crear un volume group con nombre en disco indicado con PE indicado
+  lvg: 
+    vg: "{{ nombre_vg }}" 
+    pvs: "{{ nombre_dev }}"
+    pesize: "{{ pe_size }}"
+
+- name: Crear un LV con el nombre y tamaño indicados
+  lvol: 
+    vg: "{{ nombre_vg }}"
+    lv: "{{ nombre_lv }}"
+    size: "{{ lv_size }}"
+
+- name: Crear el punto de montaje
+  file: 
+    path: "{{ fs_path }}"
+    state: directory 
+    mode: 0755  
+
+- name: Formatear a ext3 el filesystem si es RHEL 6.x
+  filesystem: 
+    fstype: ext3 
+    dev: "/dev/{{ nombre_vg }}/{{ nombre_lv }}"
+  when: ansible_facts['distribution_major_version'] == "6"
+
+- name: Formatear a xfs el filesystem si es RHEL 7.x
+  filesystem: 
+    fstype: xfs 
+    dev: /dev/"{{ nombre_vg }}"/"{{ nombre_lv }}"
+  when: ansible_facts['distribution_major_version'] == "7"
+
+- name: Montado del nuevo filesystem
+  mount: 
+    path: "{{ fs_path }}"
+    src: "/dev/{{ nombre_vg }}/{{ nombre_lv }}"
+    fstype: ext3 
+    state: mounted  
+  when: ansible_facts['distribution_major_version'] == "6" 
+
+- name: Montado del nuevo filesystem
+  mount: 
+    path: "{{ fs_path }}"
+    src: "/dev/{{ nombre_vg }}/{{ nombre_lv }}"
+    fstype: xfs 
+    state: mounted  
+  when: ansible_facts['distribution_major_version'] == "7"

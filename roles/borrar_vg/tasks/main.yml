@@ -1,0 +1,24 @@
+---
+# tasks file for borrar_vg
+
+- name: Desmontado del FS indicado
+  mount: 
+    path: "{{ fs_path }}"
+    state: unmounted   
+
+- name: Eliminar punto de montaje
+  file: 
+    path: "{{ fs_path }}"
+    state: absent 
+
+- name: Eliminar LV con nombre indicado
+  lvol: 
+    vg: "{{ nombre_vg }}"
+    lv: "{{ nombre_lv }}"
+    state: absent 
+    force: yes
+
+- name: Eliminar VG con nombre indicado
+  lvg: 
+    vg: "{{ nombre_vg }}" 
+    state: absent

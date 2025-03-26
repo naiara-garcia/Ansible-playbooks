@@ -1,0 +1,8 @@
+---
+# vars file for crear_vg
+nombre_vg: vg_nuevo
+nombre_dev: /dev/sdc
+pe_size: 4
+nombre_lv: lv_nuevo
+lv_size: 1g
+fs_path: /nuevo

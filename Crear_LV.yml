@@ -1,0 +1,7 @@
+- name: Crear LV
+  hosts: all
+  remote_user: root
+
+  tasks:
+  - name: Crear un LV con el nombre naiara_test de 200MB
+    lvol: vg=vg_TEST lv=naiara_test size=200

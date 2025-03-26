@@ -1,0 +1,7 @@
+- name: Eliminar LV
+  hosts: all
+  remote_user: root
+
+  tasks:
+  - name: Eliminar LV con nombre naiara_test de 200MB
+    lvol: vg=vg_TEST lv=naiara_test state=absent force=yes
